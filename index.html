@@ -1,0 +1,471 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Grade 5 Unit 5 Town</title>
+
+    <style>
+      body {
+        background-image: url("assets/background.png");
+        background-size: cover;
+        background-position: center;
+        background-color: #002b36;
+        color: #eee8d5;
+        font-family: "Comic Sans MS", "Comic Sans", cursive;
+        text-align: center;
+        margin: 0;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .page {
+        background: rgba(0, 43, 54, 0.9);
+        padding: 30px;
+        border: 4px solid #586e75;
+        width: 90%;
+        max-width: 800px;
+      }
+      .hidden {
+        display: none !important;
+      }
+
+      #japanese-text {
+        font-size: 30px;
+        color: #b58900;
+        margin-bottom: 5px;
+        font-weight: bold;
+      }
+      #question-text {
+        font-size: 50px;
+        line-height: 1.1;
+        margin: 10px 0;
+        color: #fff;
+      }
+
+      /* Style para sa Question Image */
+      #question-image {
+        max-width: 250px;
+        max-height: 180px;
+        width: auto;
+        height: auto;
+        margin: 10px auto;
+        border-radius: 8px;
+        border: 2px solid #586e75;
+        display: block;
+      }
+
+      #score-board {
+        font-size: 1.5rem;
+        color: #b58900;
+        margin-bottom: 10px;
+        font-weight: bold;
+      }
+
+      .tnt-timer {
+        background-image: url("assets/tnt.png");
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center;
+        background-color: transparent;
+        color: white;
+        font-weight: bold;
+        width: 150px;
+        height: 80px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 20px auto;
+        font-size: 2rem;
+      }
+
+      .chest-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+        margin-top: 20px;
+        justify-items: center;
+      }
+      .chest-btn {
+        width: 120px;
+        height: 120px;
+        background-size: contain;
+        background-repeat: no-repeat;
+        border: none;
+        cursor: pointer;
+        background-color: transparent;
+      }
+
+      button {
+        background: #268bd2;
+        color: white;
+        padding: 15px 30px;
+        border: none;
+        cursor: pointer;
+        margin-top: 10px;
+        font-size: 1.2rem;
+        font-family: "Comic Sans MS", "Comic Sans", cursive;
+      }
+      .btn-quit {
+        background: #dc322f;
+        margin-top: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="page-start" class="page">
+      <h1 style="font-size: 60px">TOWN<br />町</h1>
+      <button onclick="showPage('page-rules')">HOW TO PLAY</button><br />
+      <button
+        onclick="
+          initGame('normal');
+          showPage('page-quiz');
+        "
+      >
+        PLAY</button
+      ><br />
+      <button
+        style="background: #859900"
+        onclick="
+          initGame('extra');
+          showPage('page-quiz');
+        "
+      >
+        EXTRA CHALLENGE
+      </button>
+    </div>
+
+    <div id="page-rules" class="page hidden">
+      <h2>RULES</h2>
+      <p>
+        Answer correctly to open a chest! <br />正しく答えて、宝箱を開けよう！
+      </p>
+      <button onclick="showPage('page-start')">BACK</button>
+    </div>
+
+    <div id="page-quiz" class="page hidden">
+      <div id="score-board">
+        Question: <span id="q-current"></span> / <span id="q-total"></span>
+      </div>
+      <!-- <div class="tnt-timer"><span id="timer-val"></span></div> -->
+
+      <!-- Dito idinagdag ang image element para sa tanong -->
+      <img id="question-image" class="hidden" alt="Question Image" />
+
+      <div id="japanese-text"></div>
+      <div id="question-text"></div>
+      <button id="btn-reveal" onclick="revealAnswer(false)">
+        REVEAL ANSWER
+      </button>
+      <div id="answer-section" class="hidden">
+        <div>
+          <h1
+            id="answer-text"
+            style="
+              color: white;
+              background-color: #009961;
+              padding: 10px 20px;
+              border-radius: 8px;
+              display: inline-block;
+              font-size: 2.4rem;
+            "
+          ></h1>
+        </div>
+        <button id="btn-win" onclick="showPage('page-chest')">
+          CHOOSE A CHEST
+        </button>
+        <button id="btn-next" class="hidden" onclick="checkGameOver()">
+          NEXT QUESTION
+        </button>
+      </div>
+      <br /><button class="btn-quit" onclick="quitGame()">QUIT GAME</button>
+    </div>
+
+    <div id="page-chest" class="page hidden">
+      <h2>CHOOSE A CHEST</h2>
+      <div class="chest-grid">
+        <button
+          class="chest-btn"
+          style="background-image: url(&quot;assets/red.png&quot;)"
+          onclick="win()"
+        ></button>
+        <button
+          class="chest-btn"
+          style="background-image: url(&quot;assets/blue.png&quot;)"
+          onclick="win()"
+        ></button>
+        <button
+          class="chest-btn"
+          style="background-image: url(&quot;assets/yellow.png&quot;)"
+          onclick="win()"
+        ></button>
+        <button
+          class="chest-btn"
+          style="background-image: url(&quot;assets/green.png&quot;)"
+          onclick="win()"
+        ></button>
+      </div>
+    </div>
+
+    <div id="page-reward" class="page hidden">
+      <h2 id="win-text" style="font-size: 2.5rem">YOU WON!</h2>
+      <div
+        id="win-icon"
+        style="
+          width: 200px;
+          height: 200px;
+          background-size: contain;
+          background-repeat: no-repeat;
+          margin: 0 auto;
+        "
+      ></div>
+      <p id="reward-desc" style="font-size: 1.5rem; margin: 20px"></p>
+      <button onclick="checkGameOver()">NEXT QUESTION</button>
+    </div>
+
+    <div id="page-end" class="page hidden">
+      <h1 id="end-title" style="font-size: 3rem">GAME OVER</h1>
+      <p id="end-msg">Thanks for playing!</p>
+      <button onclick="showPage('page-start')">RESTART</button>
+    </div>
+
+    <script>
+      // Audio Setup
+      const bgMusic = new Audio("assets/bg_music.mp3");
+      const chestSound = new Audio("assets/chest_sound.mp3");
+      const tickSound = new Audio("assets/tick_sound.mp3");
+      const timeoutSound = new Audio("assets/timeout_sound.mp3");
+      const revealSound = new Audio("assets/reveal_sound.mp3");
+      bgMusic.loop = true;
+
+      // --- DATA (May dagdag na 'img' property para sa bawat tanong) ---
+      const questions = [
+        [
+          {
+            j: "かっぱつな",
+            qNormal: "活発な",
+            aNormal: "active",
+            img: "assets/imageQ/personality/active.png",
+          },
+          {
+            j: "ゆうかんな",
+            qNormal: "勇敢な",
+            aNormal: "brave",
+            img: "assets/imageQ/personality/brave.png",
+          },
+          {
+            j: "しんしょくてきな",
+            qNormal: "親しみやすい",
+            aNormal: "friendly",
+            img: "assets/imageQ/personality/friendly.png",
+          },
+          {
+            j: "ひとをわらわせる",
+            qNormal: "人を笑わせる / 面白い",
+            aNormal: "funny",
+            img: "assets/imageQ/personality/funny.png",
+          },
+          {
+            j: "やさしい",
+            qNormal: "親切な",
+            aNormal: "kind",
+            img: "assets/imageQ/personality/kind.png",
+          },
+          {
+            j: "はずかしがりやの",
+            qNormal: "恥ずかしがり屋の",
+            aNormal: "shy",
+            img: "assets/imageQ/personality/shy.png",
+          },
+          {
+            j: "あたまがいい",
+            qNormal: "頭がいい",
+            aNormal: "smart",
+            img: "assets/imageQ/personality/smart.png",
+          },
+          {
+            j: "つよい",
+            qNormal: "強い",
+            aNormal: "strong",
+            img: "assets/imageQ/personality/strong.png",
+          },
+          {
+            j: "おだやかな",
+            qNormal: "穏やかな",
+            aNormal: "gentle",
+            img: "assets/imageQ/personality/gentle.png",
+          },
+        ],
+        // {
+        //   j: "2. さいがい",
+        //   qNormal: "災害",
+        //   aNormal: "disaster",
+        //   img: "", // Kung walang picture, iwanan lang na blanko ("") o tanggalin ang property
+        // },
+      ];
+
+      const rewards = {
+        ROW: {
+          img: "row.png",
+          desc: "All row sits down<br>(横の列の全員が座る)",
+        },
+        LINE: {
+          img: "line.png",
+          desc: "All column sits down<br>(縦の列の全員が座る)",
+        },
+        "CRISS CROSS": {
+          img: "crisscross.png",
+          desc: "Diagonal sits<br>(横と縦の列の全員が座れる)",
+        },
+        "ONLY ME": { img: "onlyme.png", desc: "You sit<br>(あなただけ座る)" },
+        BOYS: {
+          img: "boys.png",
+          desc: "All boys sit down and all girls stand up<br>(男の子全員が座り、女の子全員が立つ)",
+        },
+        GIRLS: {
+          img: "girls.png",
+          desc: "All girls sit down and all boys stand up<br>(女の子全員が座り、男の子全員が立つ)",
+        },
+        "JANKEN BATTLE": {
+          img: "janken.jpg",
+          desc: "Play rock, scissors, paper. You and other who wins or is draw, sit down. <br>(じゃんけんをします。あなたに勝った人か、あいこの人は座ることができます。)",
+        },
+      };
+
+      let timer,
+        timeLeft = "",
+        currentQCount = 1,
+        currentMode = "normal",
+        currentPool = [];
+
+      function stopAllSounds() {
+        [bgMusic, chestSound, tickSound, timeoutSound].forEach((s) => {
+          s.pause();
+          s.currentTime = 0;
+        });
+      }
+
+      function initGame(mode, num) {
+        currentMode = mode;
+        totalQuestions = num || questions.length;
+        currentQCount = 1;
+        currentPool = [...questions].sort(() => Math.random() - 0.5);
+        document.getElementById("q-total").innerText = totalQuestions;
+        document.getElementById("q-current").innerText = currentQCount;
+
+        bgMusic.play().catch((e) => console.log("Music blocked:", e));
+        loadQuestion();
+      }
+
+      function win() {
+        chestSound.play().catch(() => {});
+        const keys = Object.keys(rewards);
+        const randomKey = keys[Math.floor(Math.random() * keys.length)];
+        const reward = rewards[randomKey];
+
+        document.getElementById("win-text").innerText = randomKey;
+        document.getElementById("win-icon").style.backgroundImage =
+          `url('assets/${reward.img}')`;
+        document.getElementById("reward-desc").innerHTML = reward.desc;
+
+        setTimeout(() => winSound.play().catch(() => {}), 500);
+        showPage("page-reward");
+      }
+
+      function quitGame() {
+        stopTimer();
+        stopAllSounds();
+        showPage("page-end");
+      }
+
+      function loadQuestion() {
+        const rand = currentPool.pop();
+        if (!rand) {
+          currentPool = [...questions].sort(() => Math.random() - 0.5);
+          loadQuestion();
+          return;
+        }
+
+        if (currentMode === "extra") {
+          document.getElementById("japanese-text").innerText =
+            rand.jExtra || "";
+          document.getElementById("question-text").innerText =
+            rand.qExtra || "";
+          document.getElementById("answer-text").innerText = rand.aExtra || "";
+        } else {
+          document.getElementById("japanese-text").innerText = rand.j;
+          document.getElementById("question-text").innerText = rand.qNormal;
+          document.getElementById("answer-text").innerText = rand.aNormal;
+        }
+
+        // --- Dito kinokontrol ang pagpapakita ng picture ---
+        const imgElement = document.getElementById("question-image");
+        if (rand.img && rand.img.trim() !== "") {
+          imgElement.src = rand.img;
+          imgElement.classList.remove("hidden");
+        } else {
+          imgElement.src = "";
+          imgElement.classList.add("hidden");
+        }
+
+        document.getElementById("btn-reveal").classList.remove("hidden");
+        document.getElementById("answer-section").classList.add("hidden");
+      }
+
+      function stopTimer() {
+        clearInterval(timer);
+      }
+
+      function revealAnswer(isTimeout) {
+        pauseMusic();
+        if (!isTimeout) {
+          revealSound.play().catch(() => {});
+        }
+
+        stopTimer();
+        document.getElementById("btn-reveal").classList.add("hidden");
+        document.getElementById("answer-section").classList.remove("hidden");
+
+        const btnWin = document.getElementById("btn-win");
+        const btnNext = document.getElementById("btn-next");
+
+        if (isTimeout) {
+          btnWin.classList.add("hidden");
+          btnNext.classList.remove("hidden");
+        } else {
+          btnWin.classList.remove("hidden");
+          btnNext.classList.add("hidden");
+        }
+      }
+
+      function showPage(pageId) {
+        document
+          .querySelectorAll(".page")
+          .forEach((p) => p.classList.add("hidden"));
+        document.getElementById(pageId).classList.remove("hidden");
+      }
+
+      function checkGameOver() {
+        if (currentQCount >= totalQuestions) {
+          quitGame();
+        } else {
+          currentQCount++;
+          document.getElementById("q-current").innerText = currentQCount;
+          loadQuestion();
+          bgMusic.play().catch(() => {});
+          showPage("page-quiz");
+        }
+      }
+
+      function pauseMusic() {
+        bgMusic.pause();
+      }
+
+      function resumeMusic() {
+        bgMusic.play().catch(() => {});
+      }
+    </script>
+  </body>
+</html>
